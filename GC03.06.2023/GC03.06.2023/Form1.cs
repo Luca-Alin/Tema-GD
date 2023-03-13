@@ -10,7 +10,7 @@ namespace GC03._06._2023
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
-            Ex_1(e);
+            //Ex_1(e);
             //Ex_2(e);
             //Ex_3(e);
         }
@@ -127,48 +127,49 @@ namespace GC03._06._2023
 
         private void Ex_3(PaintEventArgs e)
         {
+            
             Graphics g = e.Graphics;
             Pen p = new Pen(Color.Black, 2);
             Random rnd = new Random();
-            
             int n = rnd.Next(20, 50);
-            int x_min = this.ClientSize.Width, x_max = 0;
-            int y_min = this.ClientSize.Height, y_max = 0;
             int x, y;
             Point[] point = new Point[n];
 
+            int CGx = 0;
+            int CGy = 0;
 
-            double kappa1 = 0; double kappa2 = 0;
+
             for (int i = 0; i < n; i++)
             {
                 x = rnd.Next(this.ClientSize.Width / 3, this.ClientSize.Width - this.ClientSize.Width / 3);
                 y = rnd.Next(this.ClientSize.Height / 3, this.ClientSize.Height - this.ClientSize.Height / 3);
                 point[i] = new Point(x, y);
-                kappa1 += (double)x;
-                kappa2 += (double)y;
                 g.DrawEllipse(p, x, y, 2, 2);
 
-                if (x < x_min)
-                    x_min = x;
-                else if (x > x_max)
-                    x_max = x;
-
-                if (y < y_min)
-                    y_min = y;
-                else if (y > y_max)
-                    y_max = y;
+                CGx += x;
+                CGy += y;
             }
 
-            g.DrawEllipse(p, x_min, y_min, x_max - x_min, y_max-y_min);
+            CGx /= n;
+            CGy /= n;
 
 
+            int razaMaxima = 0;
 
+            for (int i = 0; i < n; i++)
+            {
+                int raza = (int)Math.Sqrt((point[i].Y - CGy) * (point[i].Y - CGy) +
+                                        (point[i].X - CGx) * (point[i].X - CGx));
 
-            
+                if (raza > razaMaxima) 
+                    razaMaxima = raza;
+            }
+
+            int startCercx = CGx - razaMaxima;
+            int startCercy = CGy - razaMaxima;
+
+            g.DrawEllipse(p, startCercx, startCercy, razaMaxima * 2, razaMaxima * 2);
 
         }
-
-
-
     }
 }
